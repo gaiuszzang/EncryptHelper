@@ -42,7 +42,7 @@ Use the `toEncrypt()`, `toDecrypt()` method for encryption or decryption.
 ```kotlin
 val originalText = "Hello, World!"
 val encryptText = encryptHelper.toEncrypt(originalText)
-val decryptText = encryptHelper.toEncrypt(encryptText)
+val decryptText = encryptHelper.toDecrypt(encryptText)
 ```
 
 ### License
