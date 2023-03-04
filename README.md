@@ -5,6 +5,8 @@ It uses KeyStore internally, so keys are protected by Android System.
 
 ![example](https://user-images.githubusercontent.com/15318053/214221741-6f32e3e6-3270-4802-8dc6-0f4fe7d17bc1.gif)
 
+<br />
+
 ### Including in your project
 Add below codes to `settings.gradle`.
 ```gradle
@@ -30,7 +32,7 @@ dependencies {
     implementation 'com.github.gaiuszzang:EncryptHelper:x.x.x'
 }
 ```
-
+<br />
 
 ### How to use
 Create `EncryptHelper` instance with key alias.
@@ -38,12 +40,27 @@ Create `EncryptHelper` instance with key alias.
 val encryptHelper = EncryptHelper("sample_app_key_alias")
 ```
 
+You can set up other Key Type.
+```kotlin
+val encryptHelper = EncryptHelper(
+    keyAlias = "sample_app_key_alias",
+    keyType = KeyType.RSA_ECB_PKCS1_4096
+)
+```
+See the following KeyTypes.
+ - `KeyType.RSA_ECB_PKCS1_2048`(default) : RSA Algorithm, ECB Block Mode, PKCS1 Padding, Key Length 2048bit
+ - `KeyType.RSA_ECB_PKCS1_4096` : RSA Algorithm, ECB Block Mode, PKCS1 Padding, Key Length 4096bit
+ 
+<br />
+
 Use the `toEncrypt()`, `toDecrypt()` method for encryption or decryption.
 ```kotlin
 val originalText = "Hello, World!"
 val encryptText = encryptHelper.toEncrypt(originalText)
 val decryptText = encryptHelper.toDecrypt(encryptText)
 ```
+
+<br />
 
 ### License
 ```xml

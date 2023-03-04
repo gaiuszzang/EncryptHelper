@@ -13,7 +13,8 @@ import javax.crypto.Cipher
 
 
 class EncryptHelper(
-    private val keyAlias: String
+    private val keyAlias: String,
+    private val keyType: KeyType = KeyType.RSA_ECB_PKCS1_2048
 ) {
     private var encryptCipher: Cipher? = null
     private var decryptCipher: Cipher? = null
@@ -31,10 +32,10 @@ class EncryptHelper(
                 createPrivateKeyStore(keyAlias)
             }
             val keyEntry = keyStore.getEntry(keyAlias, null)
-            encryptCipher = Cipher.getInstance(CIPHER_ALGORITHM).apply {
+            encryptCipher = Cipher.getInstance(keyType.cipherAlgorithm).apply {
                 init(Cipher.ENCRYPT_MODE, (keyEntry as KeyStore.PrivateKeyEntry).certificate.publicKey)
             }
-            decryptCipher = Cipher.getInstance(CIPHER_ALGORITHM).apply {
+            decryptCipher = Cipher.getInstance(keyType.cipherAlgorithm).apply {
                 init(Cipher.DECRYPT_MODE, (keyEntry as KeyStore.PrivateKeyEntry).privateKey)
             }
         } catch (e: Exception) {
@@ -47,9 +48,9 @@ class EncryptHelper(
      * shorter than 256 letters in certain character encoding, such as UTF-8.
      */
     fun toEncrypt(plainText: String): String {
+        val bytes = plainText.toByteArray(Charsets.UTF_8)
         try {
             encryptCipher?.let { cipher ->
-                val bytes = plainText.toByteArray(Charsets.UTF_8)
                 val encryptedBytes = cipher.doFinal(bytes)
                 val encoded = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     Base64.getEncoder().encode(encryptedBytes)
@@ -63,7 +64,7 @@ class EncryptHelper(
         } catch (e: Exception) {
             e.printStackTrace()
             setup() //re-setup
-            return plainText
+            throw e
         }
     }
 
@@ -94,7 +95,7 @@ class EncryptHelper(
                     alias,
                     KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
                 )
-                    .setAlgorithmParameterSpec(RSAKeyGenParameterSpec(KEY_LENGTH_BIT, F4))
+                    .setAlgorithmParameterSpec(RSAKeyGenParameterSpec(keyType.keyLengthBit, F4))
                     .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
                     .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
                     .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
@@ -110,14 +111,7 @@ class EncryptHelper(
     }
 
     companion object {
-        // 모든 입력값은 2048비트(256바이트) 보다 클 수 없다.
-        private const val KEY_LENGTH_BIT = 2048
-
         private const val KEY_PROVIDER_NAME = "AndroidKeyStore"
         private const val KEYSTORE_INSTANCE_TYPE = "AndroidKeyStore"
-
-        private const val CIPHER_ALGORITHM =
-            "${KeyProperties.KEY_ALGORITHM_RSA}/" + "${KeyProperties.BLOCK_MODE_ECB}/" + KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1
-
     }
 }
