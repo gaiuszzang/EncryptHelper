@@ -6,13 +6,13 @@ plugins {
 
 android {
     namespace 'io.groovin.encrypthelper'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
-        minSdk 24
-        targetSdk 33
-        versionCode 2
-        versionName "1.0.1"
+        minSdk 26
+        targetSdk 34
+        versionCode 3
+        versionName "1.0.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -31,6 +31,11 @@ android {
     kotlinOptions {
         jvmTarget = '11'
     }
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+        }
+    }
 }
 
 dependencies {
@@ -42,10 +47,10 @@ afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
-                from components.release
+                from components.getByName('release')
                 groupId = 'io.groovin'
                 artifactId = 'encrypthelper'
-                version = '1.0.1'
+                version = '1.0.2'
             }
         }
     }

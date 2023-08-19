@@ -52,11 +52,7 @@ class EncryptHelper(
         try {
             encryptCipher?.let { cipher ->
                 val encryptedBytes = cipher.doFinal(bytes)
-                val encoded = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    Base64.getEncoder().encode(encryptedBytes)
-                } else {
-                    android.util.Base64.encode(encryptedBytes, android.util.Base64.DEFAULT)
-                }
+                val encoded = Base64.getEncoder().encode(encryptedBytes)
                 return String(encoded)
             } ?: run {
                 return plainText
@@ -72,11 +68,7 @@ class EncryptHelper(
         try {
             decryptCipher?.let { cipher ->
                 val base64EncryptedBytes = encryptedText.toByteArray(Charsets.UTF_8)
-                val encryptedBytes = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    Base64.getDecoder().decode(base64EncryptedBytes)
-                } else {
-                    android.util.Base64.decode(base64EncryptedBytes, android.util.Base64.DEFAULT)
-                }
+                val encryptedBytes = Base64.getDecoder().decode(base64EncryptedBytes)
                 return String(cipher.doFinal(encryptedBytes))
             } ?: run {
                 return encryptedText
