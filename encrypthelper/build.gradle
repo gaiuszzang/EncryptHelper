@@ -48,7 +48,7 @@ afterEvaluate {
                 from components.getByName('release')
                 groupId = 'io.groovin'
                 artifactId = 'encrypthelper'
-                version = '1.0.2'
+                version = '1.0.3'
             }
         }
     }
