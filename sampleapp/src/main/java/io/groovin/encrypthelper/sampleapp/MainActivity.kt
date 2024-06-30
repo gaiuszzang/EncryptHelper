@@ -69,6 +69,7 @@ fun Screen() {
                 placeholder = {
                     Text("Please input the plain text here.")
                 },
+                minLines = 5,
                 onValueChange = { originalText = it }
             )
             Button(
