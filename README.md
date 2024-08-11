@@ -1,5 +1,5 @@
 ## EncryptHelper
-[![Release](https://jitpack.io/v/gaiuszzang/EncryptHelper.svg)](https://jitpack.io/#gaiuszzang/EncryptHelper)  
+[![Release](https://jitpack.io/v/io.groovin/EncryptHelper.svg)](https://jitpack.io/#io.groovin/EncryptHelper)  
 This library offers a Encrypt & Decrypt Utils.
 It uses KeyStore internally, so keys are protected by Android System.
 
@@ -17,19 +17,11 @@ dependencyResolutionManagement {
     }
 }
 ```
-for old gradle version, Add below codes to **your project**'s `build.gradle`.
-```gradle
-allprojects {
-    repositories {
-        maven { url "https://jitpack.io" }
-    }
-}
-```
 
 And add a dependency code to your **module**'s `build.gradle` file.
 ```gradle
 dependencies {
-    implementation 'com.github.gaiuszzang:EncryptHelper:x.x.x'
+    implementation 'io.groovin:EncryptHelper:x.x.x'
 }
 ```
 <br />
