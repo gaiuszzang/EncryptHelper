@@ -1,16 +1,16 @@
 plugins {
-    id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
     id 'maven-publish'
 }
 
 android {
     namespace 'io.groovin.encrypthelper'
-    compileSdk 35
+    compileSdk libs.versions.compileSdk.get().toInteger()
 
     defaultConfig {
-        minSdk 26
-        targetSdk 35
+        minSdk libs.versions.minSdk.get().toInteger()
+        targetSdk libs.versions.targetSdk.get().toInteger()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -48,7 +48,7 @@ afterEvaluate {
                 from components.getByName('release')
                 groupId = 'io.groovin'
                 artifactId = 'encrypthelper'
-                version = '1.0.3'
+                version = '2.0.0'
             }
         }
     }

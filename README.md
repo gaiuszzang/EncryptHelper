@@ -3,7 +3,7 @@
 This library offers a Encrypt & Decrypt Utils.
 It uses KeyStore internally, so keys are protected by Android System.
 
-![example](https://user-images.githubusercontent.com/15318053/214221741-6f32e3e6-3270-4802-8dc6-0f4fe7d17bc1.gif)
+![Image](./docs/encryptsample.gif)
 
 <br />
 
@@ -27,30 +27,67 @@ dependencies {
 <br />
 
 ### How to use
-Create `EncryptHelper` instance with key alias.
-```kotlin
-val encryptHelper = EncryptHelper("sample_app_key_alias")
-```
+Create `EncryptHelper` instance using `EncryptHelperFactory` with key alias.
 
-You can set up other Key Type.
 ```kotlin
-val encryptHelper = EncryptHelper(
+// Using default settings (AES-GCM 256-bit, recommended)
+val encryptHelper = EncryptHelperFactory.create("sample_app_key_alias")
+
+// Or specify a KeyType
+val encryptHelper = EncryptHelperFactory.create(
     keyAlias = "sample_app_key_alias",
-    keyType = KeyType.RSA_ECB_PKCS1_4096
+    keyType = KeyType.AES_GCM_256
 )
 ```
-See the following KeyTypes.
- - `KeyType.RSA_ECB_PKCS1_2048`(default) : RSA Algorithm, ECB Block Mode, PKCS1 Padding, Key Length 2048bit
- - `KeyType.RSA_ECB_PKCS1_4096` : RSA Algorithm, ECB Block Mode, PKCS1 Padding, Key Length 4096bit
- 
-<br />
 
-Use the `toEncrypt()`, `toDecrypt()` method for encryption or decryption.
+Use the `toEncrypt()`, `toDecrypt()` methods for encryption or decryption.
 ```kotlin
 val originalText = "Hello, World!"
-val encryptText = encryptHelper.toEncrypt(originalText)
-val decryptText = encryptHelper.toDecrypt(encryptText)
+val encryptedText = encryptHelper.toEncrypt(originalText)
+val decryptedText = encryptHelper.toDecrypt(encryptedText)
 ```
+
+<br />
+
+### KeyType Options
+
+The library supports both **AES** and **RSA** encryption methods. The factory automatically selects the appropriate implementation based on the KeyType.
+
+#### AES Encryption (Recommended)
+- **`KeyType.AES_GCM_256`** (Default): AES-GCM with 256-bit key
+  - ✅ **Recommended** for most use cases
+  - ✅ Fast performance
+  - ✅ No size limit for plaintext
+  - ✅ Authenticated encryption (tamper-proof)
+  - Uses symmetric encryption with Android KeyStore
+
+- **`KeyType.AES_GCM_128`**: AES-GCM with 128-bit key
+  - Slightly faster than 256-bit
+  - Still highly secure for general use
+  - Same features as AES_GCM_256
+
+#### RSA Encryption
+- **`KeyType.RSA_ECB_PKCS1_2048`**: RSA with 2048-bit key
+  - ⚠️ Maximum plaintext size: ~245 bytes
+  - Uses asymmetric encryption with Android KeyStore
+  - Suitable for small data or key exchange
+
+- **`KeyType.RSA_ECB_PKCS1_4096`**: RSA with 4096-bit key
+  - ⚠️ Maximum plaintext size: ~501 bytes
+  - Higher security than 2048-bit
+  - Slower than 2048-bit
+
+#### AES vs RSA Comparison
+
+| Feature | AES (Symmetric) | RSA (Asymmetric) |
+|---------|----------------|------------------|
+| Speed | ⚡ Very Fast | 🐢 Slower |
+| Data Size Limit | ✅ Unlimited | ❌ Limited (~245-501 bytes) |
+| Key Type | Same key for encrypt/decrypt | Public/Private key pair |
+| Use Case | General data encryption | Small data, key exchange |
+| Performance | Excellent for large data | Best for small data only |
+
+**Recommendation**: Use **AES_GCM_256** (default) for most applications. Only use RSA if you specifically need asymmetric encryption features.
 
 <br />
 
