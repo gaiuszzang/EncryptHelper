@@ -1,4 +1,5 @@
 ## EncryptHelper
+[![Maven Central](https://img.shields.io/maven-central/v/io.groovin/encrypthelper)](https://central.sonatype.com/artifact/io.groovin/encrypthelper)
 
 This library offers a Encrypt & Decrypt Utils.
 It uses KeyStore internally, so keys are protected by Android System.
