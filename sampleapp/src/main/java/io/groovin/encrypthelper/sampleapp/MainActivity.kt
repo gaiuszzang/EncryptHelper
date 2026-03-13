@@ -51,6 +51,7 @@ import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -75,6 +76,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Screen() {
     val context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
     val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
     var useAES by remember { mutableStateOf(true) }
@@ -266,7 +268,10 @@ fun Screen() {
                         )
                         Button(
                             modifier = Modifier.align(Alignment.End),
-                            onClick = { encrypt() },
+                            onClick = {
+                                keyboardController?.hide()
+                                encrypt()
+                            },
                             enabled = originalText.isNotEmpty()
                         ) {
                             Icon(

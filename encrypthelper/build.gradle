@@ -1,8 +1,14 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    id 'maven-publish'
+    alias(libs.plugins.maven.publish)
 }
+
+def publicationGroup = providers.gradleProperty("GROUP").get()
+def publicationArtifactId = providers.gradleProperty("POM_ARTIFACT_ID").orElse(project.name).get()
+def publicationVersion = providers.gradleProperty("VERSION_NAME").get()
+
+group = publicationGroup
+version = publicationVersion
 
 android {
     namespace 'io.groovin.encrypthelper'
@@ -10,7 +16,6 @@ android {
 
     defaultConfig {
         minSdk libs.versions.minSdk.get().toInteger()
-        targetSdk libs.versions.targetSdk.get().toInteger()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -22,17 +27,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+    kotlin {
+        jvmToolchain(21)
     }
-    kotlinOptions {
-        jvmTarget = '11'
+    lint {
+        targetSdk libs.versions.targetSdk.get().toInteger()
     }
-    publishing {
-        singleVariant('release') {
-            withSourcesJar()
-        }
+    testOptions {
+        targetSdk libs.versions.targetSdk.get().toInteger()
     }
 }
 
@@ -40,18 +42,33 @@ dependencies {
     //nothing to do
 }
 
+mavenPublishing {
+    publishToMavenCentral()
+    signAllPublications()
 
-afterEvaluate {
-    publishing {
-        publications {
-            release(MavenPublication) {
-                from components.getByName('release')
-                groupId = 'io.groovin'
-                artifactId = 'encrypthelper'
-                version = '2.0.0'
+    coordinates(publicationGroup, publicationArtifactId, publicationVersion)
+
+    pom {
+        name = 'EncryptHelper'
+        description = 'EncryptHelper is a simple and easy AES encryption/decryption helper for Android'
+        url = 'https://github.com/gaiuszzang/EncryptHelper'
+        licenses {
+            license {
+                name = 'Apache License 2.0'
+                url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
             }
+        }
+        developers {
+            developer {
+                id = 'gaiuszzang'
+                name = 'gaiuszzang'
+                url = 'https://github.com/gaiuszzang'
+            }
+        }
+        scm {
+            url = 'https://github.com/gaiuszzang/EncryptHelper'
+            connection = 'scm:git:git://github.com/gaiuszzang/EncryptHelper.git'
+            developerConnection = 'scm:git:ssh://git@github.com/gaiuszzang/EncryptHelper.git'
         }
     }
 }
-
-group = 'io.groovin'
